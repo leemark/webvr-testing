@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Web VR boilerplate</title>
+    <title>Manitou Springs in WebVR</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
     <meta name="mobile-web-app-capable" content="yes">
@@ -114,10 +114,26 @@
 
 
     /* new stuff for example */
+
+    function onMouseWheel(event) {
+        if (event.wheelDeltaY) { // WebKit
+            camera.fov -= event.wheelDeltaY * 0.05;
+        } else if (event.wheelDelta) { // Opera / IE9
+            camera.fov -= event.wheelDelta * 0.05;
+        } else if (event.detail) { // Firefox
+            camera.fov += event.detail * 1.0;
+        }
+
+        camera.fov = Math.max(45, Math.min(100, camera.fov));
+        camera.updateProjectionMatrix();
+    }
+    document.addEventListener('mousewheel', onMouseWheel, false);
+    document.addEventListener('DOMMouseScroll', onMouseWheel, false);
+
     var sphere = new THREE.Mesh(
         new THREE.SphereGeometry(100, 32, 32),
         new THREE.MeshBasicMaterial({
-            map: THREE.ImageUtils.loadTexture('img/example.jpg')
+            map: THREE.ImageUtils.loadTexture('img/seven_min_springs.jpg')
         })
     );
     sphere.scale.x = -1;
