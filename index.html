@@ -99,6 +99,7 @@
 Leaflet, for mapping happiness. Mappiness?
   -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+<script src="data/data.js"></script>    
 
 <script>
     // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
@@ -142,16 +143,17 @@ Leaflet, for mapping happiness. Mappiness?
     }
     document.addEventListener('mousewheel', onMouseWheel, false);
     document.addEventListener('DOMMouseScroll', onMouseWheel, false);
-
+ /*
+    var vrImage = new THREE.MeshBasicMaterial({
+            map: THREE.ImageUtils.loadTexture('img/seven_min_springs.jpg')
+        });
     var sphere = new THREE.Mesh(
         new THREE.SphereGeometry(100, 32, 32),
-        new THREE.MeshBasicMaterial({
-            map: THREE.ImageUtils.loadTexture('img/seven_min_springs.jpg')
-        })
+        vrImage
     );
     sphere.scale.x = -1;
     scene.add(sphere);
-
+*/
     // Create a VR manager helper to enter and exit VR mode.
     var params = {
         hideButton: false, // Default: false.
@@ -196,11 +198,36 @@ var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/
 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 }).addTo(map);
     
+    function addMarkers(poiData){ // poiData is in data/data.js
+        poiData.features.forEach(function(item, idx){
+            console.log(item);
+            var vrImgSrc = item.properties.imgSrc,
+                coords = item.geometry.coordinates,
+                name = item.properties.name,
+                vrMesh = addVRMesh(vrImgSrc),
+                marker = L.marker(coords).addTo(map).on('click', function(){showVR(vrMesh);});
+        });
+    }
     
-    var markere = L.marker([38.858477, -104.911646]).addTo(map).on('click', function(e){showVR(e);});
+    addMarkers(poiData);
     
-    function showVR(){
+    function addVRMesh(vrImg){
+        var vrImage = new THREE.MeshBasicMaterial({
+            map: THREE.ImageUtils.loadTexture(vrImg)
+        });
+        var sphere = new THREE.Mesh(
+            new THREE.SphereGeometry(100, 32, 32),
+            vrImage
+        );
+        sphere.scale.x = -1;
+        return sphere;
+    }
+
+    function showVR(vrMesh){
         mapEl.style.zIndex=-999;
+           
+        //scene.remove(sphere);
+        scene.add(vrMesh);
     }
 </script>
 
