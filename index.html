@@ -9,6 +9,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" rel="stylesheet" type="text/css" />
     <style>
         body {
             width: 100%;
@@ -18,6 +19,14 @@
             margin: 0px;
             padding: 0;
             overflow: hidden;
+        }
+        #map{
+            width: 100%;
+            height: 500px;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
     </style>
 </head>
@@ -86,6 +95,10 @@
   -->
 <script src="build/webvr-manager.js"></script>
 
+<!--
+Leaflet, for mapping happiness. Mappiness?
+  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
 
 <script>
     // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
@@ -170,6 +183,25 @@
     }
 
     window.addEventListener('keydown', onKey, true);
+    
+    /** 
+    MAP STUFF
+    **/
+var mapEl = document.createElement("div"); 
+    mapEl.id = "map";
+    document.body.appendChild(mapEl);
+    var map = L.map('map').setView([38.857706, -104.916394], 16);
+
+var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+}).addTo(map);
+    
+    
+    var markere = L.marker([38.858477, -104.911646]).addTo(map).on('click', function(e){showVR(e);});
+    
+    function showVR(){
+        mapEl.style.zIndex=-999;
+    }
 </script>
 
 </html>
