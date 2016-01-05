@@ -40,15 +40,18 @@
             font-size: 1.2em;
             cursor: pointer;
         }
+        
         .fade-in {
             opacity: 0;
             animation: fadeIn .7s ease-out forwards;
         }
+        
         .fade-out {
             opacity: 1;
             animation: fadeOut .7s ease-out forwards;
             pointer-events: none;
         }
+        
         .fade-out * {
             pointer-events: none;
         }
@@ -58,16 +61,21 @@
                 opacity: 0;
             }
         }
+        
         @keyframes fadeIn {
             to {
                 opacity: 1;
             }
         }
+        
+        #video {
+            position: absolute;
+        }
     </style>
 </head>
 
 <body>
-
+    <iframe id="video" width="1280" height="720" src="" frameborder="0" allowfullscreen></iframe>
 </body>
 
 <script>
@@ -159,7 +167,7 @@ Leaflet, for mapping happiness. Mappiness?
     var scene = new THREE.Scene();
 
     // Create a three.js camera.
-    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+    var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
 
     // Apply VR headset positional data to camera.
     var controls = new THREE.VRControls(camera);
@@ -171,21 +179,22 @@ Leaflet, for mapping happiness. Mappiness?
     var currMesh;
 
     /* new stuff for example */
+    /*
+        function onMouseWheel(event) {
+            if (event.wheelDeltaY) { // WebKit
+                camera.fov -= event.wheelDeltaY * 0.05;
+            } else if (event.wheelDelta) { // Opera / IE9
+                camera.fov -= event.wheelDelta * 0.05;
+            } else if (event.detail) { // Firefox
+                camera.fov += event.detail * 1.0;
+            }
 
-    function onMouseWheel(event) {
-        if (event.wheelDeltaY) { // WebKit
-            camera.fov -= event.wheelDeltaY * 0.05;
-        } else if (event.wheelDelta) { // Opera / IE9
-            camera.fov -= event.wheelDelta * 0.05;
-        } else if (event.detail) { // Firefox
-            camera.fov += event.detail * 1.0;
+            camera.fov = Math.max(45, Math.min(100, camera.fov));
+            camera.updateProjectionMatrix();
         }
-
-        camera.fov = Math.max(45, Math.min(100, camera.fov));
-        camera.updateProjectionMatrix();
-    }
-    document.addEventListener('mousewheel', onMouseWheel, false);
-    document.addEventListener('DOMMouseScroll', onMouseWheel, false);
+        document.addEventListener('mousewheel', onMouseWheel, false);
+        document.addEventListener('DOMMouseScroll', onMouseWheel, false);
+        */
     /*
     var vrImage = new THREE.MeshBasicMaterial({
             map: THREE.ImageUtils.loadTexture('img/seven_min_springs.jpg')
@@ -251,8 +260,9 @@ Leaflet, for mapping happiness. Mappiness?
                 coords = item.geometry.coordinates,
                 name = item.properties.name,
                 vrMesh = addVRMesh(vrImgSrc),
+                type = item.properties.type,
                 marker = L.marker(coords).addTo(map).on('click', function () {
-                    showVR(vrMesh);
+                    showVR(vrMesh, type, vrImgSrc);
                 });
         });
     }
@@ -271,13 +281,17 @@ Leaflet, for mapping happiness. Mappiness?
         return sphere;
     }
 
-    function showVR(vrMesh) {
+    function showVR(vrMesh, type, src) {
         currMesh = vrMesh;
         mapEl.classList.add('fade-out');
         mapEl.classList.remove('fade-in');
         //mapEl.style.zIndex = -999;
         //scene.remove(sphere);
-        scene.add(vrMesh);
+        if (type === 'img') {
+            scene.add(vrMesh);
+        } else if (type === 'vid') {
+            showVid(src);
+        }
     }
 
     function hideVR() {
@@ -286,11 +300,45 @@ Leaflet, for mapping happiness. Mappiness?
         //mapEl.style.zIndex = -999;
         scene.remove(currMesh);
     }
-    
-    document.querySelector('.mapToggle').addEventListener('click', function(){
+
+    function showVid(vidID) {
+        console.log(vidID);
+        var vidEl = document.querySelector('#video');
+        vidEl.src = vidID + '?rel=0&amp;controls=0&amp;showinfo=0&autoplay=1&hd=1&VQ=HD720';
+        vidEl.style.width = window.innerWidth + 'px';
+        vidEl.style.height = window.innerHeight + 'px';
+        window.addEventListener('resize', function () {
+            vidEl.style.width = window.innerWidth + 'px';
+            vidEl.style.height = window.innerHeight + 'px';
+        }, false);
+    }
+
+    document.querySelector('.mapToggle').addEventListener('click', function () {
         console.log('back to map');
         hideVR();
     });
+    /*
+        function addText() {
+            var shapes, geom, mat, mesh;
+
+            shapes = THREE.FontUtils.generateShapes("Seven Minute Spring", {
+                font: "optimer",
+                weight: "bold",
+                size: 1.5
+            });
+            geom = new THREE.ShapeGeometry(shapes);
+            mat = new THREE.MeshBasicMaterial({
+                opacity: 0.7,
+                transparent: true
+            });
+            mesh = new THREE.Mesh(geom, mat);
+            scene.add(mesh);
+            mesh.position.z = -30;
+            mesh.position.x = 10;
+            mesh.position.y = 5.5;
+        };
+        addText();
+        */
 </script>
 
 </html>
