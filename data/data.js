@@ -39,7 +39,7 @@ var poiData = {
             "properties": {
                 "type": "img",
                 "name": "Upper Washington #2",
-                "imgSrc": "img/upper_washington_2.jpg"
+                "imgSrc": "img/quad3.jpg"
             },
             "geometry": {
                 "type": "Point",
