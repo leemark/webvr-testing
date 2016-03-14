@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="google" value="notranslate">
+
+
+    <title>SXSW - webvr/aframe</title>
+    <script src="https://aframe.io/releases/latest/aframe.min.js"></script>
+
+
+
+    <style>
+        canvas {
+            cursor: crosshair;
+        }
+    </style>
+
+
+
+
+</head>
+
+<body>
+
+    <a-scene>
+        <a-sky id="one" src="img/1.jpg" rotation="0 0 0" visible="true"></a-sky>
+        <a-sky id="two" src="img/2.jpg" rotation="0 90 0" visible="false"></a-sky>
+        <a-sky id="three" src="img/3.jpg" rotation="0 90 0" visible="false"></a-sky>
+
+        <a-entity position="0 2.2 4">
+            <a-entity camera look-controls wasd-controls>
+                <a-entity position="0 .5 -5" geometry="primitive: ring; radiusOuter: 0.22;
+                radiusInner: 0.15; segmentsTheta: 21" material="color: white; shader: flat; transparent: true; opacity: .5" cursor="maxDistance: 30; fuse: true; timeout: 1600">
+                    <a-animation begin="click" easing="ease-in" attribute="scale" fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+                    <a-animation begin="fusing" easing="ease-in" attribute="scale" fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-animation>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <a-image id="home" src="img/home.png" width="11" height="3" rotation="0 0 0" scale=".7 .7 .7" position="0 -5 -7" opacity=".4"></a-image>
+        <a-image id="prev" src="img/prev.png" width="11" height="3" rotation="0 15 0" scale=".7 .7 .7" position="-9 -5.75 -7" opacity=".4"></a-image>
+        <a-image id="next" src="img/next.png" width="11" height="3" rotation="0 -15 0" scale=".7 .7 .7" position="9 -5.75 -7" opacity=".4"></a-image>
+    </a-scene>
+
+
+    <script src="js/scene.js">
+    </script>
+
+
+
+
+</body>
+
+</html>
